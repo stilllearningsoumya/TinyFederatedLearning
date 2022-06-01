@@ -45,7 +45,7 @@ limitations under the License.
 #include <JPEGDecoder.h>
 
 // Checks that the Arducam library has been correctly configured
-#if !(defined OV5642_MINI_5MP_PLUS)
+#if !(defined OV2640_MINI_2MP_PLUS)
 #error Please select the hardware platform and camera module in the Arduino/libraries/ArduCAM/memorysaver.h
 #endif
 

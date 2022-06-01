@@ -62,7 +62,7 @@ def main():
 
 
 	# Setup connection to Arduino
-	port = '/dev/cu.usbmodem142301' # change this to what the Arduino Port is
+	port = '/dev/ttyACM0' # change this to what the Arduino Port is
 	ard = serial.Serial(port,9600,timeout=10)
 	time.sleep(3) # wait for Arduino
 
