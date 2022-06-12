@@ -247,35 +247,34 @@ TfLiteStatus DecodeAndProcessImage(tflite::ErrorReporter* error_reporter,
 
 // Get an image from the camera module
 TfLiteStatus GetImage(tflite::ErrorReporter* error_reporter, int image_width,
-                      int image_height, int channels, int8_t* image_data) {
+                      int image_height, int channels) {
   static bool g_is_camera_initialized = false;
-  if (!g_is_camera_initialized) {
-    TfLiteStatus init_status = InitCamera(error_reporter);
-    if (init_status != kTfLiteOk) {
-      TF_LITE_REPORT_ERROR(error_reporter, "InitCamera failed");
-      return init_status;
-    }
-    g_is_camera_initialized = true;
-  }
-
-  TfLiteStatus capture_status = PerformCapture(error_reporter);
-  if (capture_status != kTfLiteOk) {
-    TF_LITE_REPORT_ERROR(error_reporter, "PerformCapture failed");
-    return capture_status;
-  }
-
-  TfLiteStatus read_data_status = ReadData(error_reporter);
-  if (read_data_status != kTfLiteOk) {
-    TF_LITE_REPORT_ERROR(error_reporter, "ReadData failed");
-    return read_data_status;
-  }
-
-  TfLiteStatus decode_status = DecodeAndProcessImage(
-      error_reporter, image_width, image_height, image_data);
-  if (decode_status != kTfLiteOk) {
-    TF_LITE_REPORT_ERROR(error_reporter, "DecodeAndProcessImage failed");
-    return decode_status;
-  }
-
+//  if (!g_is_camera_initialized) {
+//    TfLiteStatus init_status = InitCamera(error_reporter);
+//    if (init_status != kTfLiteOk) {
+//      TF_LITE_REPORT_ERROR(error_reporter, "InitCamera failed");
+//      return init_status;
+//    }
+//    g_is_camera_initialized = true;
+//  }
+//
+//  TfLiteStatus capture_status = PerformCapture(error_reporter);
+//  if (capture_status != kTfLiteOk) {
+//    TF_LITE_REPORT_ERROR(error_reporter, "PerformCapture failed");
+//    return capture_status;
+//  }
+//
+//  TfLiteStatus read_data_status = ReadData(error_reporter);
+//  if (read_data_status != kTfLiteOk) {
+//    TF_LITE_REPORT_ERROR(error_reporter, "ReadData failed");
+//    return read_data_status;
+//  }
+//
+//  TfLiteStatus decode_status = DecodeAndProcessImage(
+//      error_reporter, image_width, image_height, image_data);
+//  if (decode_status != kTfLiteOk) {
+//    TF_LITE_REPORT_ERROR(error_reporter, "DecodeAndProcessImage failed");
+//    return decode_status;
+//  }
   return kTfLiteOk;
 }

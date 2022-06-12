@@ -7,7 +7,6 @@
 #include "main_functions.h"
 
 #include "detection_responder.h"
-#include "image_provider.h"
 #include "model_settings.h"
 #include "person_detect_model_data.h"
 #include "tensorflow/lite/micro/kernels/micro_ops.h"
@@ -45,6 +44,8 @@ const int local_epochs = 20;
 // static char readTruthsString[batch_size * output_size * (sizeof(double) / sizeof(char))];
 //static char readWeightsString[input_size * output_size * (sizeof(double) / sizeof(char))];
 static char readWeightsString[6000];
+
+int8_t image_data[256] = {123,  11, 100, 104,  76, 117,  47,  62,  84,  65,  74, 106,  60, 102,  57, 112,   0,  74,  47,  43, 121,  85,  74,  18,  95,  74, 20,   1,  21,  96,  96,  75,  73,   8,  40,  55,  31, 125,  69, 100,  62,  48,  78, 113, 107, 115,  29,  36,  59,  80, 125, 107, 21,  61,  51,  10,  83,   7,  91,  62,  36,   5,  21, 113, 115, 31,  64,  98,   8,   5,  79,  85,  32,  75, 119, 108,  69,  70, 84, 114,   1, 102,  29,  33,  36,  52,  89,  11,  97,  74, 117, 70, 103, 110,  34,  42,  44, 125,  64,  88,  80, 113,  13,  26, 66, 123,  72,  19,  51, 124,  65,  30,  15,  96, 100,  97,  26, 94, 122, 116,  83,  22,  87,  11,   9,  22,  78,  91, 116,  91, 125,  77, 117,  36, 124,  38,  57,  86,  57, 123,  89,  74, 110, 81, 121,  71,  22, 116,  35, 122,  61,  21,  34,  40,  49,  38, 50,  55,  22,  98, 121,  67,  32,  63,  74,  46,  85,  83,  26, 69,  54,  35, 105, 113,  42, 111,  79, 119,  83,  85, 114,  57, 93,  75,  74,  51, 102,  74, 103,  35, 112,  81,  49,  95,  65, 102,  99,  42,  41,   4, 121,  47,  76,  42,  65,  84,  23,  28, 114,  92,  30,  16,  40,  23, 117, 126,  33,  44,  99, 103,  51, 42,  50, 107,  51, 90,  96,  72, 114, 116, 111,  41,  72,  92, 7, 101,  11, 111,  28,  76,  50,  75,  17,  65, 122,  10,  34, 83,  34,  93,  82, 104, 124, 102, 123,  79};
 
 // In order to use optimized tensorflow lite kernels, a signed int8 quantized
 // model is preferred over the legacy unsigned model format. This means that
@@ -132,10 +133,9 @@ void setup() {
 void loop() {
   // Starting Arduino image capture
 //  StartTime = millis();
-  if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels,
-                            input->data.int8)) {
-    TF_LITE_REPORT_ERROR(error_reporter, "Image capture failed.");
-  }
+//  if (kTfLiteOk != GetImage(error_reporter, kNumCols, kNumRows, kNumChannels)) {
+//    TF_LITE_REPORT_ERROR(error_reporter, "Image capture failed.");
+//  }
   // Run the model on this input and make sure it succeeds.
   if (kTfLiteOk != interpreter->Invoke()) {
     TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed.");
@@ -159,10 +159,16 @@ void loop() {
   double **init_weights = new double*[NNmodel->input_size];
   double *init_bias = new double[NNmodel->output_size];
 
+  int a[256];
+  for(int i=0;i<256;i++)
+  {
+    a[i] = image_data[i] - '0'; 
+  }
+
   // Train
   // Convert output to data
   for(int b = 0; b < NNmodel->batch_size; b++) {
-    input_data[b] = new int[NNmodel->input_size];
+    input_data[b] = a;
     ground_truth[b] = new int[NNmodel->output_size];
     double_data[b] = new double[NNmodel->input_size];
     for(int i = 0; i < NNmodel->input_size; i++){

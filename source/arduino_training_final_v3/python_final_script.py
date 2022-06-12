@@ -1,6 +1,5 @@
 # Python script to run Federated Learning
 
-
 # 1. Load pickle file embeddings
 # 2. Load initial weight
 # 3. Communicate with arduino
